@@ -78,22 +78,19 @@ def generate_question():
         nums = [random.choice(range_list) for _ in range(3)]
         ops = [random.choice(['+', '-', '*', '/']) for _ in range(2)]
         
-        # 1. 避免除以 0 (雖然 range 移除了 0，但運算過程可能產生 0)
-        # 2. 強制檢查是否為整數解
+        # 強制檢查是否為整數解
         try:
             expr_str = f"({nums[0]}) {ops[0]} ({nums[1]}) {ops[1]} ({nums[2]})"
             ans = eval(expr_str)
             
-            # 如果答案是整數，且運算過程中的除法也能整除 (為了教學體驗)
+            # 如果答案是整數，且運算過程中的除法也能整除
             if int(ans) == ans:
-                # 額外檢查中間步驟是否整除 (優化體驗，非必須但推薦)
-                # 先乘除後加減，如果先算除法，必須整除
+                # 額外檢查中間步驟是否整除
                 if ops[0] == '/' and nums[0] % nums[1] != 0: continue
                 if ops[1] == '/' and ops[0] not in ['*', '/']: # 後算除法
                     if nums[1] % nums[2] != 0: continue
                 
                 # 通過所有檢查，生成 LaTeX
-                # 括號邏輯：運算符後面的數字，如果是負數，必須加括號
                 tex_1 = to_latex(nums[0], False)
                 tex_2 = to_latex(nums[1], nums[1] < 0) # 如果是負數就加括號
                 tex_3 = to_latex(nums[2], nums[2] < 0)
@@ -164,7 +161,6 @@ def next_int_question():
 st.title("🔢 整數運算大師 (Integer Master)")
 st.caption("目標：熟練正負數 (Signed Numbers) 的加減乘除與去括號變號。")
 
-
 # 顯示題目
 q = st.session_state.q_int
 st.markdown('<div class="math-display">', unsafe_allow_html=True)
@@ -176,10 +172,6 @@ with st.expander("💡 符號搞混了嗎？點我查看變號技巧"):
     st.markdown(f'<div class="hint-box">{q["hint_msg"]}</div>', unsafe_allow_html=True)
     if q['hint_detail']:
         st.latex(q['hint_detail'])
-    
-
-[Image of number line addition subtraction]
-
 
 st.divider()
 
